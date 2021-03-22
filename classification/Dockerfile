@@ -4,9 +4,10 @@ ARG BASE_PATH
 
 WORKDIR /python
 COPY ./$BASE_PATH/requirements/base.txt /python/base.txt
-COPY lambda_function.py   ${LAMBDA_TASK_ROOT}
+COPY .   ${LAMBDA_TASK_ROOT}
 
-RUN pip install -r base.txt -t .
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r base.txt
 RUN rm -f base.txt
 
 CMD ["lambda_function.handler"]
