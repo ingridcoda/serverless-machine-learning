@@ -17,9 +17,9 @@ def handler(event, context):
             raise BadRequestException("400 - Parameter 'algorithm' is required.")
 
         elif "decision_tree" in algorithm:
-            print("Running decision tree algorithm...")
+            print("\nRunning decision tree algorithm...")
             decision_tree.run_decision_tree(kfold, seed, test_size, dataset_name, dataset_url)
-            print("Decision tree algorithm was completed successful!")
+            print("Decision tree algorithm was completed successful!\n")
 
             return {
                 "statusCode": 200,
