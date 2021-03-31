@@ -1,46 +1,22 @@
-from sklearn import tree
-from sklearn.datasets import load_iris
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import KFold
+from sklearn.tree import DecisionTreeClassifier
+
+import common as c
 
 
-def load_dataset():
-    iris = load_iris()
-    return iris.data, iris.target
-
-
-def decision_tree_by_entropy_criteria(data, target):
-    classifier = tree.DecisionTreeClassifier(criterion="entropy")
-    trained = classifier.fit(data, target)
-    return trained, classifier
-
-
-def decision_tree_by_gini_criteria(data, target):
-    classifier = tree.DecisionTreeClassifier(criterion="gini")
-    trained = classifier.fit(data, target)
-    return trained, classifier
-
-
-def run_decision_tree():
+def run_decision_tree(num_folds=10, seed=7, test_size=0.25, dataset_name="iris", dataset_url=None):
     try:
-        data, target = load_dataset()
 
-        print("Executando árvore de decisão por entropia:")
-        trained, classifier = decision_tree_by_entropy_criteria(data, target)
-        print("Predições:", trained.predict([[2., 2., 2., 2.]]))
+        kfold = KFold(num_folds, True, random_state=seed)
+        model = DecisionTreeClassifier()
+        X, Y = c.load_dataset(dataset_name, dataset_url)
+        X_training, X_test, Y_training, Y_test = c.split_dataset(test_size, seed, X, Y)
 
-        allScores = cross_val_score(classifier, data, target, cv=10)
-        print("Scores:")
-        print(allScores)
-        print(f"Acurácia: {allScores.mean() * 100}%\n\n")
-
-        print("Executando árvore de decisão por indice gini:")
-        trained, classifier = decision_tree_by_gini_criteria(data, target)
-        print("Predições:", trained.predict([[2., 2., 2., 2.]]))
-
-        allScores = cross_val_score(classifier, data, target, cv=10)
-        print("Scores:")
-        print(allScores)
-        print(f"Acurácia: {allScores.mean() * 100}%")
+        print(f"Running CART decision tree by cross validation with {num_folds} folds and seed = {seed}:\n")
+        c.training_and_evaluating_model_by_cross_validation(model, X, Y, kfold)
+        print(f"\nRunning CART decision tree by training and tests partitions,"
+              f" with seed = {seed} and {test_size * 100}% of test partition's size:\n")
+        c.training_and_evaluating_model_by_training_and_test_partitions(model, X_training, X_test, Y_training, Y_test)
 
     except Exception as e:
         raise e
