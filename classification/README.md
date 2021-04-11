@@ -16,7 +16,6 @@ Before deploying application, it's necessary to set some environment variables:
 * run `make deploy` to deploy application to AWS
 * run `make destroy` to destroy all
 
-
 ### Other useful commands
 * run `make create-aws-resources` to create only the required resources at AWS
 * run `make destroy-aws-resources` to delete only the required resources at AWS
@@ -30,7 +29,6 @@ Before deploying application, it's necessary to set some environment variables:
 * run `make create-lambda` to create only the project's AWS Lambda Function
 * run `make deploy-lambda` to deploy the project only to AWS Lambda Function
 * run `make destroy-lambda` to delete only the project's AWS Lambda Function
-
 
 ### JSON Parameters to run lambda at AWS Console:
 * `"algorithm"`: Type of algorithm to be executed (required, because there are no default values);
