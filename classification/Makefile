@@ -24,7 +24,7 @@ create-role:
 	
 create-lambda:
 	@echo Creating AWS Lambda Function classification...
-	aws lambda create-function --function-name classification --timeout 900 --package-type Image --code ImageUri=${AWS_ACCOUNT_NUMBER}.dkr.ecr.${AWS_REGION}.amazonaws.com/classification:latest --role arn:aws:iam::${AWS_ACCOUNT_NUMBER}:role/classification --profile ${AWS_CREDENTIALS_PROFILE}
+	aws lambda create-function --function-name classification --timeout 900 --memory-size 2048 --package-type Image --code ImageUri=${AWS_ACCOUNT_NUMBER}.dkr.ecr.${AWS_REGION}.amazonaws.com/classification:latest --role arn:aws:iam::${AWS_ACCOUNT_NUMBER}:role/classification --profile ${AWS_CREDENTIALS_PROFILE}
 	@echo AWS Lambda Function classification created successfully!
 	
 create-aws-resources: authenticate-ecr create-ecr create-role create-lambda	
@@ -37,9 +37,9 @@ create-image:
 create: create-aws-resources create-image
 	
 deploy-ecr:
-	@echo Building docker image to deploy...
+	@echo Updating docker image to deploy...
 	docker build -t classification .
-	@echo Image built was successfully!
+	@echo Image updated successfully!
 	@echo Updating docker image at AWS ECR classification...
 	aws ecr batch-delete-image --repository-name classification --image-ids imageTag=latest --profile ${AWS_CREDENTIALS_PROFILE}
 	docker tag classification:latest ${AWS_ACCOUNT_NUMBER}.dkr.ecr.${AWS_REGION}.amazonaws.com/classification
@@ -51,14 +51,14 @@ deploy-lambda:
 	aws lambda update-function-code --function-name classification --image-uri ${AWS_ACCOUNT_NUMBER}.dkr.ecr.${AWS_REGION}.amazonaws.com/classification:latest --profile ${AWS_CREDENTIALS_PROFILE}
 	@echo AWS Lambda Function classification deployed successfully!
 	
-deploy: destroy authenticate-ecr deploy-ecr deploy-lambda
+deploy: authenticate-ecr deploy-ecr deploy-lambda
 	
 destroy-image:
 	@echo Cleaning docker...
 	docker system prune -a -f
 	@echo Cleaned!
 	
-destoy-ecr:
+destroy-ecr:
 	@echo Deleting AWS ECR classification...
 	aws ecr delete-repository --repository-name classification --region ${AWS_REGION} --profile ${AWS_CREDENTIALS_PROFILE} --force
 	@echo AWS ECR classification deleted successfully!
