@@ -97,14 +97,14 @@ def training_and_evaluating_model_by_training_and_test_partitions_for_regression
     print(f"Test R2: {metrics.r2_score(Y_test, Y_predictions)}\n\n")
 
 
-def prepare_to_run(num_folds=10, seed=7, test_size=0.25, dataset_name="iris", dataset_url=None):
+def prepare_to_run(num_folds, seed, test_size, dataset_name, dataset_url):
     kfold = KFold(n_splits=num_folds, shuffle=True, random_state=seed)
     X, Y = load_dataset(dataset_name, dataset_url)
     X_training, X_test, Y_training, Y_test = split_dataset(test_size, seed, X, Y)
     return X, Y, X_training, X_test, Y_training, Y_test, kfold
 
 
-def run_with_classification_model(model, num_folds=10, seed=7, test_size=0.25, dataset_name="iris", dataset_url=None):
+def run_with_classification_model(model, num_folds, seed, test_size, dataset_name, dataset_url):
     X, Y, X_training, X_test, Y_training, Y_test, kfold = prepare_to_run(num_folds, seed, test_size,
                                                                          dataset_name, dataset_url)
     print(f"Running model by cross validation:\n")
@@ -114,7 +114,7 @@ def run_with_classification_model(model, num_folds=10, seed=7, test_size=0.25, d
                                                                                      Y_training, Y_test)
 
 
-def run_with_regression_model(model, num_folds=10, seed=7, test_size=0.25, dataset_name="iris", dataset_url=None):
+def run_with_regression_model(model, num_folds, seed, test_size, dataset_name, dataset_url):
     X, Y, X_training, X_test, Y_training, Y_test, kfold = prepare_to_run(num_folds, seed, test_size,
                                                                          dataset_name, dataset_url)
     print(f"Running model by cross validation:\n")

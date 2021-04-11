@@ -9,6 +9,8 @@ from exceptions import *
 
 
 def handler(event, context):
+    supported_algorithms = ['decision_tree', 'knn', 'naive_bayes', 'svm', 'logistic_regression']
+
     try:
         algorithm = event.get("algorithm", None)
         kfold = event.get("kfold", 10)
@@ -26,6 +28,10 @@ def handler(event, context):
 
         if not event or not algorithm:
             raise BadRequestException("400 - Parameter 'algorithm' is required.")
+
+        elif algorithm not in supported_algorithms:
+            raise BadRequestException("400 - Algorithm type was invalid or not given! "
+                                      f"Please, choose one of these options: {supported_algorithms}.")
 
         elif "decision_tree" in algorithm:
             print("\nRunning decision tree algorithm...")
@@ -61,11 +67,6 @@ def handler(event, context):
             print("\nRunning Logistic Regression algorithm...")
             logistic_regression.run(kfold, seed, test_size, dataset_name, dataset_url, solver)
             print("Logistic Regression algorithm was completed successful!\n")
-
-        else:
-            raise BadRequestException("400 - Algorithm type was invalid or not given! "
-                                      "Please, choose one of these options: "
-                                      "['decision_tree', 'knn', 'naive_bayes', 'svm', 'logistic_regression'].")
 
         return {
             "statusCode": 200,
