@@ -3,6 +3,7 @@ import pandas as pd
 from sklearn import metrics
 from sklearn.datasets import (load_iris, load_boston, load_diabetes, load_digits,
                               load_linnerud, load_wine, load_breast_cancer)
+from sklearn.datasets import make_blobs
 from sklearn.metrics import classification_report
 from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_validate
@@ -43,6 +44,17 @@ def load_dataset(name, url):
 
 def split_dataset(test_size, seed, data, target):
     return train_test_split(data, target, test_size=test_size, random_state=seed)
+
+
+def generate_dataset(n_samples, n_features, centers, cluster_std, shuffle, seed):
+    X, y = make_blobs(n_samples=n_samples,
+                      n_features=n_features,
+                      centers=centers,
+                      cluster_std=cluster_std,
+                      shuffle=shuffle,
+                      random_state=seed)
+
+    return X, y
 
 
 def report_metrics(data, predicts):
@@ -122,3 +134,11 @@ def run_with_regression_model(model, num_folds, seed, test_size, dataset_name, d
     print(f"\nRunning model by training and tests partitions:\n")
     training_and_evaluating_model_by_training_and_test_partitions_for_regression(model, X_training, X_test,
                                                                                  Y_training, Y_test)
+
+
+def run_with_grouping_model(model, n_samples, n_features, centers, cluster_std, shuffle, seed):
+    X, y = generate_dataset(n_samples, n_features, centers, cluster_std, shuffle, seed)
+    predictions = model.fit_predict(X)
+    distortion = model.inertia_
+    print(f"Model predictions: {predictions}")
+    print(f"Model distortion: {distortion}")
