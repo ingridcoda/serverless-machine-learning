@@ -45,8 +45,12 @@ def handler(event, context):
                                           f"{supported_classification_algorithms}.")
 
             elif "decision_tree" in algorithm:
+                criterion = event.get("criterion", "gini")
+                max_depth = event.get("max_depth", None)
+                print(f" - Criterion: {criterion}")
+                print(f" - Maximum depth: {max_depth}")
                 print("\nRunning decision tree algorithm...")
-                decision_tree.run(kfold, seed, test_size, dataset_name, dataset_url)
+                decision_tree.run(kfold, seed, test_size, dataset_name, dataset_url, criterion, max_depth)
                 print("Decision tree algorithm was completed successful!\n")
 
             elif "knn" in algorithm:
@@ -64,19 +68,23 @@ def handler(event, context):
                 print("Naive Bayes algorithm was completed successful!\n")
 
             elif "svm" in algorithm:
+                c = event.get("C", 1.0)
                 gamma = event.get("gamma", "auto")
                 kernel = event.get("kernel", "rbf")
+                print(f" - C: {c}")
                 print(f" - Gamma: {gamma}")
                 print(f" - Kernel type: {kernel}")
                 print("\nRunning SVM algorithm...")
-                svm.run(kfold, seed, test_size, dataset_name, dataset_url, gamma, kernel)
+                svm.run(kfold, seed, test_size, dataset_name, dataset_url, c, gamma, kernel)
                 print("SVM algorithm was completed successful!\n")
 
             elif "logistic_regression" in algorithm:
                 solver = event.get("solver", "lbfgs")
+                max_iter = event.get("max_iter", 100)
                 print(f" - Solver type: {solver}")
+                print(f" - Maximum of iterations: {max_iter}")
                 print("\nRunning Logistic Regression algorithm...")
-                logistic_regression.run(kfold, seed, test_size, dataset_name, dataset_url, solver)
+                logistic_regression.run(kfold, seed, test_size, dataset_name, dataset_url, solver, max_iter)
                 print("Logistic Regression algorithm was completed successful!\n")
 
         elif _type == "grouping":

@@ -17,8 +17,10 @@ def load_dataset(name, url):
     if url:
         dataset = pd.read_csv(url, skiprows=0, delimiter=',')
         array = dataset.values
-        x = array[:, 0:8]
-        y = array[:, 8]
+        last_column_index = len(dataset.columns) - 1
+        x = array[:, 0:last_column_index]
+        y = array[:, last_column_index]
+
     elif name:
         dataset = None
         if name == 'iris':
@@ -36,7 +38,7 @@ def load_dataset(name, url):
         elif name == 'breast_cancer':
             dataset = load_breast_cancer()
 
-        x = dataset.data[:, :2]
+        x = dataset.data
         y = dataset.target
 
     return x, y
@@ -81,7 +83,7 @@ def training_and_evaluating_model_by_training_and_test_partitions_for_classifica
 
     print(f"Test Accuracy: {(right / total * 100)}%")
     print("Classification Report:")
-    print(metrics.classification_report(Y_test, Y_predictions))
+    print(metrics.classification_report(Y_test, Y_predictions, zero_division=0))
     print("Confusion Matrix:")
     print(metrics.confusion_matrix(Y_test, Y_predictions), '\n\n')
 
@@ -137,6 +139,7 @@ def run_with_regression_model(model, num_folds, seed, test_size, dataset_name, d
 
 
 def run_with_grouping_model(model, n_samples, n_features, centers, cluster_std, shuffle, seed):
+    # TODO: trocar para usar dataset dado e nao gerar mais datasets
     X, y = generate_dataset(n_samples, n_features, centers, cluster_std, shuffle, seed)
     predictions = model.fit_predict(X)
     distortion = model.inertia_
