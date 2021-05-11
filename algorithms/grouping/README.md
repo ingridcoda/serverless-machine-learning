@@ -8,6 +8,8 @@ Application to execute Machine Learning Grouping algorithms on a serverless envi
 
 * `"type"`: Type of algorithm to be executed (required, should be `"grouping"`);
 * `"algorithm"`: Type of algorithm to be executed (required, because there are no default values);
+* `"dataset_url"`: Dataset URL (required, should be an URL to a .csv dataset);
+* `"delimiter"`: Dataset delimiter (`","` is the default);
 * `"num_clusters"`: Number of clusters (`8` is the default);
 * `"init_method"`: Initialization method (`"k-means++"` is the default);
 * `"num_init"`: Initialization number (`10` is the default);

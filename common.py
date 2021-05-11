@@ -1,62 +1,23 @@
 import numpy as np
 import pandas as pd
 from sklearn import metrics
-from sklearn.datasets import (load_iris, load_boston, load_diabetes, load_digits,
-                              load_linnerud, load_wine, load_breast_cancer)
-from sklearn.datasets import make_blobs
 from sklearn.metrics import classification_report
 from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_validate
 from sklearn.model_selection import train_test_split
 
 
-def load_dataset(name, url):
-    x = None
-    y = None
-
-    if url:
-        dataset = pd.read_csv(url, skiprows=0, delimiter=',')
-        array = dataset.values
-        last_column_index = len(dataset.columns) - 1
-        x = array[:, 0:last_column_index]
-        y = array[:, last_column_index]
-
-    elif name:
-        dataset = None
-        if name == 'iris':
-            dataset = load_iris()
-        elif name == 'boston':
-            dataset = load_boston()
-        elif name == 'diabetes':
-            dataset = load_diabetes()
-        elif name == 'digits':
-            dataset = load_digits()
-        elif name == 'linnerud':
-            dataset = load_linnerud()
-        elif name == 'wine':
-            dataset = load_wine()
-        elif name == 'breast_cancer':
-            dataset = load_breast_cancer()
-
-        x = dataset.data
-        y = dataset.target
-
+def load_dataset(url, delimiter):
+    dataset = pd.read_csv(url, skiprows=0, delimiter=delimiter)
+    array = dataset.values
+    last_column_index = len(dataset.columns) - 1
+    x = array[:, 0:last_column_index]
+    y = array[:, last_column_index]
     return x, y
 
 
 def split_dataset(test_size, seed, data, target):
     return train_test_split(data, target, test_size=test_size, random_state=seed)
-
-
-def generate_dataset(n_samples, n_features, centers, cluster_std, shuffle, seed):
-    X, y = make_blobs(n_samples=n_samples,
-                      n_features=n_features,
-                      centers=centers,
-                      cluster_std=cluster_std,
-                      shuffle=shuffle,
-                      random_state=seed)
-
-    return X, y
 
 
 def report_metrics(data, predicts):
@@ -111,16 +72,16 @@ def training_and_evaluating_model_by_training_and_test_partitions_for_regression
     print(f"Test R2: {metrics.r2_score(Y_test, Y_predictions)}\n\n")
 
 
-def prepare_to_run(num_folds, seed, test_size, dataset_name, dataset_url):
+def prepare_to_run(num_folds, seed, test_size, dataset_url, delimiter):
     kfold = KFold(n_splits=num_folds, shuffle=True, random_state=seed)
-    X, Y = load_dataset(dataset_name, dataset_url)
+    X, Y = load_dataset(dataset_url, delimiter)
     X_training, X_test, Y_training, Y_test = split_dataset(test_size, seed, X, Y)
     return X, Y, X_training, X_test, Y_training, Y_test, kfold
 
 
-def run_with_classification_model(model, num_folds, seed, test_size, dataset_name, dataset_url):
+def run_with_classification_model(model, num_folds, seed, test_size, dataset_url, delimiter):
     X, Y, X_training, X_test, Y_training, Y_test, kfold = prepare_to_run(num_folds, seed, test_size,
-                                                                         dataset_name, dataset_url)
+                                                                         dataset_url, delimiter)
     print(f"Running model by cross validation:\n")
     training_and_evaluating_model_by_cross_validation_for_classification(model, X, Y, kfold)
     print(f"\nRunning model by training and tests partitions:\n")
@@ -128,9 +89,9 @@ def run_with_classification_model(model, num_folds, seed, test_size, dataset_nam
                                                                                      Y_training, Y_test)
 
 
-def run_with_regression_model(model, num_folds, seed, test_size, dataset_name, dataset_url):
+def run_with_regression_model(model, num_folds, seed, test_size, dataset_url, delimiter):
     X, Y, X_training, X_test, Y_training, Y_test, kfold = prepare_to_run(num_folds, seed, test_size,
-                                                                         dataset_name, dataset_url)
+                                                                         dataset_url, delimiter)
     print(f"Running model by cross validation:\n")
     training_and_evaluating_model_by_cross_validation_for_regression(model, X, Y, kfold)
     print(f"\nRunning model by training and tests partitions:\n")
@@ -138,9 +99,8 @@ def run_with_regression_model(model, num_folds, seed, test_size, dataset_name, d
                                                                                  Y_training, Y_test)
 
 
-def run_with_grouping_model(model, n_samples, n_features, centers, cluster_std, shuffle, seed):
-    # TODO: trocar para usar dataset dado e nao gerar mais datasets
-    X, y = generate_dataset(n_samples, n_features, centers, cluster_std, shuffle, seed)
+def run_with_grouping_model(model, dataset_url, delimiter):
+    X, y = load_dataset(dataset_url, delimiter)
     predictions = model.fit_predict(X)
     distortion = model.inertia_
     print(f"Model predictions: {predictions}")

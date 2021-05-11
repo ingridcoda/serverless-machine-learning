@@ -13,10 +13,8 @@ def handler(event, context):
     try:
         _type = event.get("type", None)
         algorithm = event.get("algorithm", None)
-
-        print("Parameters values:\n")
-        print(f" - Type: {_type}")
-        print(f" - Algorithm: {algorithm}")
+        dataset_url = event.get("dataset_url", None)
+        delimiter = event.get("delimiter", ",")
 
         if not event or not _type:
             raise BadRequestException("400 - Parameter 'type' is required.")
@@ -25,16 +23,23 @@ def handler(event, context):
             raise BadRequestException("400 - Type was invalid or not given! "
                                       f"Please, choose one of these options: {supported_types}.")
 
-        elif not event or not algorithm:
+        elif not algorithm:
             raise BadRequestException("400 - Parameter 'algorithm' is required.")
 
-        elif _type == "classification":
+        elif not dataset_url:
+            raise BadRequestException("400 - Parameter 'dataset_url' is required.")
+
+        print("Parameters values:\n")
+        print(f" - Type: {_type}")
+        print(f" - Algorithm: {algorithm}")
+        print(f" - Dataset: {dataset_url}")
+        print(f" - Dataset delimiter: {delimiter}")
+
+        if _type == "classification":
             kfold = event.get("kfold", 10)
             seed = event.get("seed", 7)
             test_size = event.get("test_size", 0.25)
-            dataset_name = event.get("dataset_name", "iris")
-            dataset_url = event.get("dataset_url", None)
-            print(f" - Dataset: {dataset_url if dataset_url else dataset_name}")
+
             print(f" - Number of folds: {kfold}")
             print(f" - Seed: {seed}")
             print(f" - Test size: {test_size}")
@@ -47,44 +52,52 @@ def handler(event, context):
             elif "decision_tree" in algorithm:
                 criterion = event.get("criterion", "gini")
                 max_depth = event.get("max_depth", None)
+
                 print(f" - Criterion: {criterion}")
                 print(f" - Maximum depth: {max_depth}")
+
                 print("\nRunning decision tree algorithm...")
-                decision_tree.run(kfold, seed, test_size, dataset_name, dataset_url, criterion, max_depth)
+                decision_tree.run(kfold, seed, test_size, dataset_url, delimiter, criterion, max_depth)
                 print("Decision tree algorithm was completed successful!\n")
 
             elif "knn" in algorithm:
                 k = event.get("k", 10)
                 distance_type = event.get("distance_type", "euclidean")
+
                 print(f" - Number of neighbors: {k}")
                 print(f" - Distance type: {distance_type}")
+
                 print("\nRunning KNN algorithm...")
-                knn.run(kfold, seed, test_size, dataset_name, dataset_url, k, distance_type)
+                knn.run(kfold, seed, test_size, dataset_url, delimiter, k, distance_type)
                 print("KNN algorithm was completed successful!\n")
 
             elif "naive_bayes" in algorithm:
                 print("\nRunning Naive Bayes algorithm...")
-                naive_bayes.run(kfold, seed, test_size, dataset_name, dataset_url)
+                naive_bayes.run(kfold, seed, test_size, dataset_url, delimiter)
                 print("Naive Bayes algorithm was completed successful!\n")
 
             elif "svm" in algorithm:
                 c = event.get("C", 1.0)
                 gamma = event.get("gamma", "auto")
                 kernel = event.get("kernel", "rbf")
+
                 print(f" - C: {c}")
                 print(f" - Gamma: {gamma}")
                 print(f" - Kernel type: {kernel}")
+
                 print("\nRunning SVM algorithm...")
-                svm.run(kfold, seed, test_size, dataset_name, dataset_url, c, gamma, kernel)
+                svm.run(kfold, seed, test_size, dataset_url, delimiter, c, gamma, kernel)
                 print("SVM algorithm was completed successful!\n")
 
             elif "logistic_regression" in algorithm:
                 solver = event.get("solver", "lbfgs")
-                max_iter = event.get("max_iter", 100)
+                max_iter = event.get("max_iter", 1000)
+
                 print(f" - Solver type: {solver}")
                 print(f" - Maximum of iterations: {max_iter}")
+
                 print("\nRunning Logistic Regression algorithm...")
-                logistic_regression.run(kfold, seed, test_size, dataset_name, dataset_url, solver, max_iter)
+                logistic_regression.run(kfold, seed, test_size, dataset_url, delimiter, solver, max_iter)
                 print("Logistic Regression algorithm was completed successful!\n")
 
         elif _type == "grouping":
@@ -100,25 +113,16 @@ def handler(event, context):
                 max_iter = event.get("max_iter", 300)
                 tolerance = event.get("tolerance", 1e-4)
                 seed = event.get("seed", None)
-                num_samples = event.get("num_samples", 100)
-                num_features = event.get("num_features", 2)
-                centers = event.get("centers", None)
-                cluster_std = event.get("cluster_std", 1.0)
-                shuffle = event.get("shuffle", True)
+
                 print(f" - Number of clusters: {num_clusters}")
                 print(f" - Initialization method: {init_method}")
                 print(f" - Initialization number: {num_init}")
                 print(f" - Maximum of iterations: {max_iter}")
                 print(f" - Tolerance: {tolerance}")
                 print(f" - Seed: {seed}")
-                print(f" - Number of samples of generated dataset: {num_samples}")
-                print(f" - Number of features of generated dataset: {num_features}")
-                print(f" - Number of centers of generated dataset: {centers}")
-                print(f" - Standard deviation of generated dataset: {cluster_std}")
-                print(f" - Shuffle generated dataset: {shuffle}")
+
                 print("\nRunning K-Means algorithm...")
-                k_means.run(num_clusters, init_method, num_init, max_iter, tolerance, seed,
-                            num_samples, num_features, centers, cluster_std, shuffle)
+                k_means.run(dataset_url, delimiter, num_clusters, init_method, num_init, max_iter, tolerance, seed)
                 print("K-Means algorithm was completed successful!\n")
 
         return {

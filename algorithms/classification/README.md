@@ -8,9 +8,8 @@ Application to execute Machine Learning Classification algorithms on a serverles
 
 * `"type"`: Type of algorithm to be executed (required, should be `"classification"`);
 * `"algorithm"`: Type of algorithm to be executed (required, because there are no default values);
-* `"dataset_name"`: Dataset name (only [scikit-learn datasets](https://scikit-learn.org/stable/datasets) are
-  accepted;`"iris"` is the default);
-* `"dataset_url"`: Dataset URL (if this value is valid, will be used instead of `"dataset_name"`);
+* `"dataset_url"`: Dataset URL (required, should be an URL to a .csv dataset);
+* `"delimiter"`: Dataset delimiter (`","` is the default);
 * `"k_fold"`: Number of folds for cross validation (`10` is the default);
 * `"seed"`: Seed for cross validation (`7` is the default);
 * `"test_size"`: Test size for training and test validation (`0.25` is the default);
@@ -22,4 +21,4 @@ Application to execute Machine Learning Classification algorithms on a serverles
 * `"kernel"`: Kernel type (for SVM algorithm only; `"rbf"` is the default);
 * `"c"`: Regularization parameter (for SVM algorithm only; `1.0` is the default);
 * `"solver"`: Solver type (for Logistic Regression algorithm only; `"lbfgs"` is the default);
-* `"max_iter"`: Maximum of iterations (for Logistic Regression algorithm only; `100` is the default).
+* `"max_iter"`: Maximum of iterations (for Logistic Regression algorithm only; `1000` is the default).
