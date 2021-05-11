@@ -4,6 +4,14 @@
 
 Application to execute Machine Learning Classification algorithms on a serverless environment.
 
+### Supported algorithms:
+
+* Decision Tree (`"decision_tree"`);
+* K-Neighbors Nearest (`"knn"`);
+* Naive Bayes (`"naive_bayes"`);
+* Logistic Regression (`"logistic_regression"`);
+* Support Vector Machines (`"svm"`).
+
 ### JSON Parameters to run lambda at AWS Console:
 
 * `"type"`: Type of algorithm to be executed (required, should be `"classification"`);

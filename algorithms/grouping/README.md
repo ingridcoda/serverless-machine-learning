@@ -4,6 +4,10 @@
 
 Application to execute Machine Learning Grouping algorithms on a serverless environment.
 
+### Supported algorithms:
+
+* K-Means (`"k_means"`).
+
 ### JSON Parameters to run lambda at AWS Console:
 
 * `"type"`: Type of algorithm to be executed (required, should be `"grouping"`);

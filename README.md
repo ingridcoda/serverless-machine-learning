@@ -48,6 +48,7 @@ exist anymore.
 * run `source venv/serverless-machine-learning/bin/activate` to work on the virtual environment
 * run `make create` to create all required resources
 * run `make deploy` to deploy application to AWS
+* run `make invoke PAYLOAD=json_payload` to invoke application using a payload, changing `json_payload` to a valid JSON payload
 * run `make destroy` to destroy all
 
 ### Other useful commands

@@ -52,6 +52,9 @@ deploy-lambda:
 	@echo AWS Lambda Function serverless-machine-learning deployed successfully!
 	
 deploy: authenticate-ecr deploy-ecr deploy-lambda
+
+invoke:
+	aws lambda invoke --profile ${AWS_CREDENTIALS_PROFILE} --function-name serverless-machine-learning --payload '${PAYLOAD}' --cli-binary-format raw-in-base64-out out --log-type Tail --query 'LogResult' --output text |  base64 -d
 	
 destroy-image:
 	@echo Cleaning docker...
