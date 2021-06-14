@@ -10,7 +10,7 @@ Application to execute Machine Learning Grouping algorithms on a serverless envi
 
 ### JSON Parameters to run lambda at AWS Console:
 
-* `"type"`: Type of algorithm to be executed (required, should be `"grouping"`);
+* `"type"`: Type of model to be executed (required, should be `"grouping"`);
 * `"algorithm"`: Type of algorithm to be executed (required, because there are no default values);
 * `"dataset_url"`: Dataset URL (required, should be an URL to a .csv dataset);
 * `"delimiter"`: Dataset delimiter (`","` is the default);
@@ -19,4 +19,4 @@ Application to execute Machine Learning Grouping algorithms on a serverless envi
 * `"num_init"`: Initialization number (`10` is the default);
 * `"max_iter"`: Maximum of iterations (`300` is the default);
 * `"tolerance"`: Tolerance (`1e-4` is the default);
-* `"seed"`: Seed for random generated dataset (`None` is the default).
+* `"seed"`: Seed that determines random number generation for centroid initialization (`None` is the default).

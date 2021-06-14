@@ -20,7 +20,7 @@ def handler(event, context):
             raise BadRequestException("400 - Parameter 'type' is required.")
 
         elif _type not in supported_types:
-            raise BadRequestException("400 - Type was invalid or not given! "
+            raise BadRequestException("400 - Model type was invalid or not given! "
                                       f"Please, choose one of these options: {supported_types}.")
 
         elif not algorithm:
@@ -30,7 +30,7 @@ def handler(event, context):
             raise BadRequestException("400 - Parameter 'dataset_url' is required.")
 
         print("Parameters values:\n")
-        print(f" - Type: {_type}")
+        print(f" - Model type: {_type}")
         print(f" - Algorithm: {algorithm}")
         print(f" - Dataset: {dataset_url}")
         print(f" - Dataset delimiter: {delimiter}")

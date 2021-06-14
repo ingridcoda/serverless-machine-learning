@@ -14,7 +14,7 @@ Application to execute Machine Learning Classification algorithms on a serverles
 
 ### JSON Parameters to run lambda at AWS Console:
 
-* `"type"`: Type of algorithm to be executed (required, should be `"classification"`);
+* `"type"`: Type of model to be executed (required, should be `"classification"`);
 * `"algorithm"`: Type of algorithm to be executed (required, because there are no default values);
 * `"dataset_url"`: Dataset URL (required, should be an URL to a .csv dataset);
 * `"delimiter"`: Dataset delimiter (`","` is the default);
